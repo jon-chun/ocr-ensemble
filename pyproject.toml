@@ -1,0 +1,8 @@
+[project]
+name = "ocr-ensemble"
+version = "0.1.0"
+description = "Public scaffold for probabilistic reconstruction of degraded print"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+

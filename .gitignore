@@ -1,0 +1,16 @@
+__pycache__/
+*.py[codz]
+
+.venv/
+.env
+.env.*
+
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+
+# Benchmark exports can be very large and may have separate licenses.
+*.parquet
+data/
+data-*/
+
