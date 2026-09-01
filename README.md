@@ -13,63 +13,39 @@ materialization, structural postprocess validation, and a minimal analyze
 report are implemented under `src/ocr_ensemble/`. Real (non-stub) provider
 adapters are not yet in this mirror.
 
-MVP status: ocr-ensemble-dev
+### MVP status
 
-Vertical slice 1 (tickets 01–08): complete. A single fixture page runs end-to-end through the full A0–A9 pipeline against a stub model — import/seal → manifest/budget/dispatch → result derivation → alignment/Consensus Entropy/fusion → ground-truth journal → score materialization → postprocess validation → analyze report. 150 tests pass in the dev repo.
+**Vertical slice 1 (tickets 01–08): complete.** A single fixture page runs
+end-to-end through the full A0–A9 pipeline against a stub model —
+import/seal → manifest/budget/dispatch → result derivation →
+alignment/Consensus Entropy/fusion → ground-truth journal → score
+materialization → postprocess validation → analyze report. 150 tests pass in
+the development repo.
 
-┌─────┬──────────────────────────────┬─────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  #  │            Ticket            │   Status    │                                                   Notes                                                    │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 01  │ Scaffold + canonical record  │ ✅ Done     │ records.py, identity.py, storage.py                                                                        │
-│     │ types                        │             │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 02  │ A0/A1 import + seal one      │ ✅ Done     │ HAVI adapter (adapters/havi.py)                                                                            │
-│     │ fixture                      │             │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 03  │ A2/A3 manifest, budget, stub │ ✅ Done     │ manifest.py, budget.py, dispatch.py                                                                        │
-│     │  dispatch                    │             │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 04  │ A4 derive Page-Model Result  │ ✅ Done     │ results.py — closed a real spec gap (terminal-outcome precedence table)                                    │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 05  │ A6 ground-truth journal      │ ✅ Done     │ ground_truth.py                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 06  │ A5 alignment / CE / fusion   │ ✅ Done     │ align.py — caught and fixed a real alignment bug pre-merge                                                 │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 07  │ A7 score materialization     │ ✅ Done     │ scoring.py — full 44-field BenchmarkObservation per spec                                                   │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 08  │ A8/A9 postprocess + analyze  │ ✅ Done     │ run_pipeline.py, postprocess.py, analyze.py — first real clean-checkout demo                               │
-│     │ (vertical slice 1)           │             │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 10  │ Local deterministic          │ ✅ Done     │ mitigate.py — implemented alongside 05, out of strict order                                                │
-│     │ mitigation (deskew)          │             │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│     │                              │ 🟡          │ Live §16 verification done and committed (docs/registries/verified-model-registry_20260901.md) — confirmed │
-│ 09  │ Real provider adapters       │ Preflight   │  model IDs/pricing for OpenAI, Anthropic, Google, xAI, OpenRouter. No adapter code written yet. Ticket     │
-│     │                              │ only        │ marked ready-for-agent.                                                                                    │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 14  │ BLN600 adapter + dataset     │ ⛔ Blocked  │ Needs its own live preflight (dataset acquisition/layout facts) before it can move to ready                │
-│     │ split                        │             │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 11  │ AI-model enhancement (paired │ ⬜ Not      │ Blocked on 09                                                                                              │
-│     │  experiment)                 │ started     │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 12  │ Full N-member                │ ⬜ Not      │ Blocked on 06 (done) + 09                                                                                  │
-│     │ alignment/CE-per-pair        │ started     │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 13  │ Postprocess anomaly          │ ⬜ Not      │ Blocked on 08 (done) + 09                                                                                  │
-│     │ detection + queues           │ started     │                                                                                                            │
-├─────┼──────────────────────────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 15  │ Scientific Acceptance        │ ⬜ Not      │ Blocked on 09, 12, 13, 14                                                                                  │
-│     │ Scorecard                    │ started     │                                                                                                            │
-└─────┴──────────────────────────────┴─────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+| # | Ticket | Status | Notes |
+|---|--------|--------|-------|
+| 01 | Scaffold + canonical record types | ✅ Done | `records.py`, `identity.py`, `storage.py` |
+| 02 | A0/A1 import + seal one fixture | ✅ Done | HAVI adapter (`adapters/havi.py`) |
+| 03 | A2/A3 manifest, budget, stub dispatch | ✅ Done | `manifest.py`, `budget.py`, `dispatch.py` |
+| 04 | A4 derive Page-Model Result | ✅ Done | `results.py` — closed a real spec gap (terminal-outcome precedence table) |
+| 05 | A6 ground-truth journal | ✅ Done | `ground_truth.py` |
+| 06 | A5 alignment / CE / fusion | ✅ Done | `align.py` — caught and fixed a real alignment bug pre-merge |
+| 07 | A7 score materialization | ✅ Done | `scoring.py` — full 44-field `BenchmarkObservation` per spec |
+| 08 | A8/A9 postprocess + analyze (vertical slice 1) | ✅ Done | `run_pipeline.py`, `postprocess.py`, `analyze.py` — first real clean-checkout demo |
+| 10 | Local deterministic mitigation (deskew) | ✅ Done | `mitigate.py` — implemented alongside 05, out of strict order |
+| 09 | Real provider adapters | 🟡 Preflight only | Live verification done and committed (`docs/registries/verified-model-registry_20260901.md`) — confirmed model IDs/pricing for OpenAI, Anthropic, Google, xAI, OpenRouter. No adapter code written yet. |
+| 14 | BLN600 adapter + dataset split | ⛔ Blocked | Needs its own live preflight (dataset acquisition/layout facts) before it can move to ready |
+| 11 | AI-model enhancement (paired experiment) | ⬜ Not started | Blocked on 09 |
+| 12 | Full N-member alignment/CE-per-pair | ⬜ Not started | Blocked on 06 (done) + 09 |
+| 13 | Postprocess anomaly detection + queues | ⬜ Not started | Blocked on 08 (done) + 09 |
+| 15 | Scientific Acceptance Scorecard | ⬜ Not started | Blocked on 09, 12, 13, 14 |
 
-Frontier (unblocked, awaiting work): 09 (adapters ready to implement against verified facts) and 14 (blocked pending its own preflight).
+**Frontier (unblocked, awaiting work):** ticket 09 (adapters ready to
+implement against verified facts) and ticket 14 (blocked pending its own
+preflight).
 
-Note: the ticket files' internal [ ] checkboxes weren't updated as work landed — actual completeness above is verified against real commits and passing tests, not those markers.
-
-Public mirror (~/code/ocr-ensemble): synced and pushed today — code/tests/utils through ticket 10 only (no provider adapters beyond the HAVI import stub, no dataset). This reflects everything done in the table above except tickets 09/14/11/12/13/15, which haven't produced implementation code yet.
-
-
+This public mirror includes code/tests/utils through ticket 10 only (no
+provider adapters beyond the HAVI import stub, no dataset).
 
 Run it with [uv](https://docs.astral.sh/uv/):
 
@@ -89,33 +65,51 @@ from `aiai-ocr-dataset/D-COMP/` that is not included in this public mirror
 (see "Data" below) and will fail with `FileNotFoundError` until that asset
 is published or you supply your own fixture at the same path.
 
-## Code Base Analysis
+## Code base analysis
 
-Codebase analysis: ocr-ensemble-dev
+Snapshot of the development repo (`ocr-ensemble-dev`), not this mirror.
 
-Size
-- Source: 5,041 LOC across 19 files (src/ocr_ensemble/)
-- Tests: 3,112 LOC across 13 files — a 0.62:1 test-to-source ratio, healthy for a project this stage
-- Largest module: records.py (1,153 LOC — canonical record types + sealing logic, expected to be large as the shared data-model hub)
+**Size**
+- Source: 5,041 LOC across 19 files (`src/ocr_ensemble/`)
+- Tests: 3,112 LOC across 13 files — a 0.62:1 test-to-source ratio
+- Largest module: `records.py` (1,153 LOC — canonical record types and sealing logic)
 
-Test coverage: 97% (1,898 statements, 55 missed), 150/150 tests passing
-- Only cli.py (0%) is untested — it's a NotImplementedError stub, not real logic
-- Everything else is 90–100%; the misses are mostly defensive/edge-case branches (e.g. malformed-input guards in postprocess.py, results.py)
+**Test coverage:** 97% (1,898 statements, 55 missed), 150/150 tests passing.
+Only `cli.py` (0%) is untested — it's a `NotImplementedError` stub, not real
+logic. Everything else is 90–100%; the misses are mostly defensive/edge-case
+branches (e.g. malformed-input guards in `postprocess.py`, `results.py`).
 
-Complexity (via radon) — Average: A (3.15), 175 functions/methods analyzed, no file below "A" maintainability
-- Two isolated C-complexity hotspots worth naming: align_hypotheses/align_pair (Levenshtein DP + multi-way merge) and _derive_outcome (D, the terminal-outcome precedence DAG) — both are inherently branchy domain logic, not sloppy code, and both are 100%-covered
-- Maintainability index floor is records.py at 31.5 ("A" but the weakest) — again a function of raw size, not disorder
+**Complexity** (via `radon`): average A (3.15) across 175 functions/methods,
+no file below "A" maintainability. Two isolated C-complexity hotspots are
+worth naming — `align_hypotheses`/`align_pair` (Levenshtein DP with a
+multi-way merge) and `_derive_outcome` (D, the terminal-outcome precedence
+DAG) — both inherently branchy domain logic rather than disorganized code,
+and both are 100%-covered. The maintainability floor is `records.py` at
+31.5 ("A", but the weakest), a function of raw size rather than disorder.
 
-Static analysis
-- ruff: 22 findings, all low-severity style (unsorted imports, deprecated typing imports, unused imports) — 21 auto-fixable, zero correctness issues
-- mypy --ignore-missing-imports: 27 errors in 3 files (scoring.py, preprocess.py, mitigate.py) — all the same root cause: functions typed to return specific record subclasses (BenchmarkObservation, SourcePage, etc.) but returning the CanonicalRecord base type. Real type-safety gap, not a runtime bug (tests pass), but worth tightening
-- 0 TODO/FIXME/XXX markers in source — no deferred work left as debt markers
+**Static analysis:**
+- `ruff`: 22 findings, all low-severity style (unsorted imports, deprecated
+  typing imports, unused imports) — 21 auto-fixable, zero correctness issues.
+- `mypy --ignore-missing-imports`: 27 errors in 3 files (`scoring.py`,
+  `preprocess.py`, `mitigate.py`), all the same root cause — functions typed
+  to return specific record subclasses (`BenchmarkObservation`, `SourcePage`,
+  etc.) but returning the `CanonicalRecord` base type. A real type-safety
+  gap, not a runtime bug (tests pass), but worth tightening.
+- 0 TODO/FIXME/XXX markers in source.
 
-Documentation: ~49% of functions/classes have docstrings — concentrated on public APIs and non-obvious logic; helper functions are often left undocumented, consistent with the project's stated no-comments-unless-non-obvious convention
+**Documentation:** ~49% of functions/classes have docstrings, concentrated
+on public APIs and non-obvious logic.
 
-Dependencies: 7 direct (datasets, gradio, huggingface-hub, opencv-python-headless, pillow, requests, tqdm) — lean for what's implemented; note the public mirror trimmed this to just 3 (numpy, opencv-python-headless, pillow) since datasets/gradio/huggingface-hub are dev-only tooling not imported by synced modules.
+**Dependencies:** 7 direct in the development repo (`datasets`, `gradio`,
+`huggingface-hub`, `opencv-python-headless`, `pillow`, `requests`, `tqdm`).
+This public mirror trims that to 3 (`numpy`, `opencv-python-headless`,
+`pillow`), since `datasets`/`gradio`/`huggingface-hub` are dev-only tooling
+not imported by any synced module.
 
-Bottom line: high test coverage and low complexity for a project at MVP vertical-slice-1 stage; the one real actionable gap is the 27 mypy return-type mismatches in scoring.py/preprocess.py/mitigate.py, worth a quick pass before ticket 09 adds more code depending on those return types.
+**Bottom line:** high test coverage and low complexity for a project at MVP
+vertical-slice-1 stage. The one real actionable gap is the 27 mypy
+return-type mismatches noted above, worth resolving before ticket 09 adds
+more code depending on those return types.
 
 ## Data
 
@@ -136,4 +130,3 @@ generated outputs are excluded, including from Git history.
 
 No open-source license has been selected yet. Unless a file states otherwise,
 all rights are reserved.
-
