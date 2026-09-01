@@ -1,5 +1,7 @@
 # OCR Ensemble
 
+*STATUS: (as of Sep 1, 2026) - close to functional MVP 0.1 release, finalizing ensemble model selection, configuration, and budgets*
+
 This repository is the minimal public mirror of an early-stage project for
 probabilistically reconstructing degraded print with an ensemble of OCR and AI
 models.
