@@ -6,15 +6,30 @@ models.
 
 ## Current status
 
-The public repository currently contains only the runnable Python scaffold. The
-ensemble pipeline is not implemented here yet.
+The pipeline stages import/seal, manifest/budget/dispatch (against a stub
+provider), Page-Model Result derivation, character alignment with Consensus
+Entropy and equal-vote fusion, an append-only ground-truth journal, score
+materialization, structural postprocess validation, and a minimal analyze
+report are implemented under `src/ocr_ensemble/`. Real (non-stub) provider
+adapters are not yet in this mirror.
 
 Run it with [uv](https://docs.astral.sh/uv/):
 
 ```sh
-uv sync --locked
+uv sync
 uv run python main.py
 ```
+
+## Tests
+
+```sh
+uv run pytest
+```
+
+Most tests are self-contained. Eight test files load a pinned sample image
+from `aiai-ocr-dataset/D-COMP/` that is not included in this public mirror
+(see "Data" below) and will fail with `FileNotFoundError` until that asset
+is published or you supply your own fixture at the same path.
 
 ## Data
 

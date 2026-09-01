@@ -1,8 +1,26 @@
 [project]
 name = "ocr-ensemble"
 version = "0.1.0"
-description = "Public scaffold for probabilistic reconstruction of degraded print"
+description = "Public mirror: probabilistic reconstruction of degraded print with an OCR/AI ensemble"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "numpy>=2.0.0",
+    "opencv-python-headless>=5.0.0.93",
+    "pillow>=12.3.0",
+]
 
+[project.scripts]
+ocr-ensemble = "ocr_ensemble.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ocr_ensemble"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
